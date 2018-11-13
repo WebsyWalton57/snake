@@ -1,0 +1,25 @@
+.gameContainer{
+	height: 540px;
+	border: 5px solid black;
+	background-color: lightgrey;
+	width: 60%;
+	padding-left: 14px;
+	padding-top: 10px;
+	margin-left: 18%;
+	margin-bottom:0px;
+}
+.row{
+	display: block;
+}
+.row .box{
+	display: inline-block;
+}
+.box{
+	height: 30px;
+	width: 5.8%;
+	background-color: white;
+	border: 1px solid black;
+}
+.snake{
+	background-color: green;
+}
