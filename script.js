@@ -8,8 +8,17 @@ var currentDir = ''
 var length = 1
 var allTimeouts = []
 var snakeSpeed = 250
+// var food = (min, max) => {Math.floor(Math.random()*(max-min+1)+min)}
 
 var snakesBoxes = ["box8_8"]
+injectFood()
+
+function injectFood(){
+  foodCol = Math.floor(Math.random()*(15-1+1)+1)
+  foodRow = Math.floor(Math.random()*(15-1+1)+1)
+  let id = 'box' + foodRow + '_' + foodCol
+  document.getElementById(id).classList.add('food')
+}
 
 function moveSnake(dir){
 	if(currentDir === dir){
@@ -29,14 +38,18 @@ function moveSnake(dir){
 	}
 	else{
 		clearAllTimeouts()
-		queryNextBox(snakeHead, dir)
+    queryNextBox(snakeHead, dir)
 	}
 }
 
+function eatingFood(id){
+  document.getElementById(id).classList.contains('food')
+}
 function queryNextBox(head, dir){
-	let row = head.split('_')[1]
+  let row = head.split('_')[1]
 	let col = head.split('_')[0]
 	col = col.split('x')[1]
+
 
 		// /	ArrowLeft  / //
 		if (dir === 'ArrowLeft') {
@@ -50,9 +63,14 @@ function queryNextBox(head, dir){
 		snakesBoxes.push(snakeHead)
 		var carryOn = gameOver(snakeHead)
 		if(carryOn){
-			let snakesTailEnd = snakesBoxes.splice(0,1)
-			document.getElementById(snakesTailEnd).classList.remove('snake')
-			document.getElementById(snakeHead).classList.add('snake')
+			let increaseSnakeLength = eatingFood(snakeHead)
+      if(increaseSnakeLength){
+        document.getElementById(snakeHead).classList.add('snake')
+      }
+      else{
+        let snakesTailEnd = snakesBoxes.splice(0,1)
+        document.getElementById(snakesTailEnd).classList.remove('snake')
+      }
 			currentDir = dir
 			allTimeouts.push(setTimeout(function () {
 					queryNextBox(snakeHead, dir)
