@@ -57,7 +57,6 @@ function queryNextBox(head, dir){
 			allTimeouts.push(setTimeout(function () {
 					queryNextBox(snakeHead, dir)
 				}, snakeSpeed))
-			keepRunning()
 		}
 	}
 
@@ -80,7 +79,6 @@ function queryNextBox(head, dir){
 			allTimeouts.push(setTimeout(function () {
 					queryNextBox(snakeHead, dir)
 				}, snakeSpeed))
-				keepRunning()
 		}
 	}
 
@@ -103,7 +101,6 @@ function queryNextBox(head, dir){
 			allTimeouts.push(setTimeout(function () {
 					queryNextBox(snakeHead, dir)
 				}, snakeSpeed))
-				keepRunning()
 		}
 	}
 
@@ -126,7 +123,6 @@ function queryNextBox(head, dir){
 			allTimeouts.push(setTimeout(function () {
 					queryNextBox(snakeHead, dir)
 				}, snakeSpeed))
-				keepRunning()
 		}
 	}
 }
@@ -148,8 +144,8 @@ function clearAllTimeouts(){
 	}
 }
 
-function keepRunning(){
-	for (var i = 0; i < allTimeouts.length; i++) {
-		allTimeouts[i]()
-	}
-}
+// function keepRunning(){
+// 	for (var i = 0; i < allTimeouts.length; i++) {
+// 		allTimeouts[i]()
+// 	}
+// }
