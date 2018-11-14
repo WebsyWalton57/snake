@@ -256,7 +256,21 @@ function detectswipe(el,func) {
     }
 
     function myfunction(el,d) {
-			let direction = (d === 'u' ? 'ArrowUp' : (d === 'd' ? 'ArrowDown' : (d === 'l' ? 'ArrowLeft' : (d === 'r' ? 'ArrowRight'))))
+			let direction = ''
+			switch (d){
+				case 'u':
+				direction = 'ArrowUp'
+				break;
+				case 'd':
+				direction = 'ArrowDown'
+				break;
+				case 'l':
+				direction = 'ArrowLeft'
+				break;
+				case 'r':
+				direction = 'ArrowRight'
+				break;
+			}
       moveSnake(direction)
     }
 
