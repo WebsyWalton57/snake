@@ -5,7 +5,7 @@ document.body.addEventListener('keydown', function(event){
 
 var snakeHead = "box8_8"
 var currentDir = ''
-var length = 1
+var totalScore = 0
 var allTimeouts = []
 var snakeSpeed = 250
 // var food = (min, max) => {Math.floor(Math.random()*(max-min+1)+min)}
@@ -18,6 +18,23 @@ function injectFood(){
   foodRow = Math.floor(Math.random()*(15-1+1)+1)
   let id = 'box' + foodRow + '_' + foodCol
   document.getElementById(id).classList.add('food')
+}
+
+function startAgain(){
+	totalScore = 0
+	var h = Array.from(document.getElementsByClassName('box'))
+	h.forEach(function(item){
+		item.classList.remove('snake')
+		item.classList.remove('food')
+		item.classList.remove('snakeHead')
+	})
+	document.getElementById('box8_8').classList.add('snakeHead')
+	currentDir = ""
+	snakesBoxes = ["box8_8"]
+	snakeHead = "box8_8"
+	snakeSpeed = 250
+	clearAllTimeouts()
+	injectFood()
 }
 
 function moveSnake(dir){
@@ -42,13 +59,13 @@ function moveSnake(dir){
 	}
 }
 
-function eatingFood(id){
-  document.getElementById(id).classList.contains('food')
-}
+
 function queryNextBox(head, dir){
   let row = head.split('_')[1]
 	let col = head.split('_')[0]
+	let oldHeadRow = row
 	col = col.split('x')[1]
+	let oldHeadCol = col
 
 
 		// /	ArrowLeft  / //
@@ -63,15 +80,15 @@ function queryNextBox(head, dir){
 		snakesBoxes.push(snakeHead)
 		var carryOn = gameOver(snakeHead)
 		if(carryOn){
-			let increaseSnakeLength = eatingFood(snakeHead)
-      if(increaseSnakeLength){
-        document.getElementById(snakeHead).classList.add('snake')
-      }
-      else{
-        let snakesTailEnd = snakesBoxes.splice(0,1)
-        document.getElementById(snakesTailEnd).classList.remove('snake')
-      }
-			currentDir = dir
+			let biggerSnake = eatingFood(snakeHead)
+			if (!biggerSnake) {
+				let snakesTailEnd = snakesBoxes.splice(0,1)
+				document.getElementById(snakesTailEnd).classList.remove('snake')
+			}
+			document.getElementById(snakeHead).classList.add('snake')
+			document.getElementById(snakeHead).classList.add('snakeHead')
+			document.getElementById('box'+ oldHeadCol + '_' + oldHeadRow).classList.remove('snakeHead')
+		 	currentDir = dir
 			allTimeouts.push(setTimeout(function () {
 					queryNextBox(snakeHead, dir)
 				}, snakeSpeed))
@@ -90,9 +107,14 @@ function queryNextBox(head, dir){
 		snakesBoxes.push(snakeHead)
 		var carryOn = gameOver(snakeHead)
 		if(carryOn){
-			let snakesTailEnd = snakesBoxes.splice(0,1)
-			document.getElementById(snakesTailEnd).classList.remove('snake')
+			let biggerSnake = eatingFood(snakeHead)
+			if (!biggerSnake) {
+				let snakesTailEnd = snakesBoxes.splice(0,1)
+				document.getElementById(snakesTailEnd).classList.remove('snake')
+			}
 			document.getElementById(snakeHead).classList.add('snake')
+			document.getElementById(snakeHead).classList.add('snakeHead')
+			document.getElementById('box'+ oldHeadCol + '_' + oldHeadRow).classList.remove('snakeHead')
 			currentDir = dir
 			allTimeouts.push(setTimeout(function () {
 					queryNextBox(snakeHead, dir)
@@ -112,9 +134,14 @@ function queryNextBox(head, dir){
 		snakesBoxes.push(snakeHead)
 		var carryOn = gameOver(snakeHead)
 		if(carryOn){
-			let snakesTailEnd = snakesBoxes.splice(0,1)
-			document.getElementById(snakesTailEnd).classList.remove('snake')
+			let biggerSnake = eatingFood(snakeHead)
+			if (!biggerSnake) {
+				let snakesTailEnd = snakesBoxes.splice(0,1)
+				document.getElementById(snakesTailEnd).classList.remove('snake')
+			}
 			document.getElementById(snakeHead).classList.add('snake')
+			document.getElementById(snakeHead).classList.add('snakeHead')
+			document.getElementById('box'+ oldHeadCol + '_' + oldHeadRow).classList.remove('snakeHead')
 			currentDir = dir
 			allTimeouts.push(setTimeout(function () {
 					queryNextBox(snakeHead, dir)
@@ -134,9 +161,14 @@ function queryNextBox(head, dir){
 		snakesBoxes.push(snakeHead)
 		var carryOn = gameOver(snakeHead)
 		if(carryOn){
-			let snakesTailEnd = snakesBoxes.splice(0,1)
-			document.getElementById(snakesTailEnd).classList.remove('snake')
+			let biggerSnake = eatingFood(snakeHead)
+			if (!biggerSnake) {
+				let snakesTailEnd = snakesBoxes.splice(0,1)
+				document.getElementById(snakesTailEnd).classList.remove('snake')
+			}
 			document.getElementById(snakeHead).classList.add('snake')
+			document.getElementById(snakeHead).classList.add('snakeHead')
+			document.getElementById('box'+ oldHeadCol + '_' + oldHeadRow).classList.remove('snakeHead')
 			currentDir = dir
 			allTimeouts.push(setTimeout(function () {
 					queryNextBox(snakeHead, dir)
@@ -145,10 +177,28 @@ function queryNextBox(head, dir){
 	}
 }
 
+function eatingFood(head){
+	if(document.getElementById(head).classList.contains('food')){
+		score()
+		document.getElementById(head).classList.remove('food')
+		injectFood()
+		snakeSpeed = snakeSpeed - 7.5
+		return true
+	}
+	else{
+		return false
+	}
+}
+
+function score(){
+totalScore++
+let html = `<h1> Score: ${totalScore} </h1>`
+document.getElementById('scores').innerHTML = html
+}
+
 function gameOver(head){
 	if (document.getElementById(head).classList.contains('snake')){
-	alert('game over')
-	console.log(snakesBoxes);
+	alert('Game Over, your score is ' + totalScore)
 	return false
 	}
 	else{
@@ -162,8 +212,54 @@ function clearAllTimeouts(){
 	}
 }
 
-// function keepRunning(){
-// 	for (var i = 0; i < allTimeouts.length; i++) {
-// 		allTimeouts[i]()
-// 	}
-// }
+
+function detectswipe(el,func) {
+      swipe_det = new Object();
+      swipe_det.sX = 0;
+      swipe_det.sY = 0;
+      swipe_det.eX = 0;
+      swipe_det.eY = 0;
+      var min_x = 20;  //min x swipe for horizontal swipe
+      var max_x = 40;  //max x difference for vertical swipe
+      var min_y = 40;  //min y swipe for vertical swipe
+      var max_y = 50;  //max y difference for horizontal swipe
+      var direc = "";
+      ele = document.getElementById(el);
+      ele.addEventListener('touchstart',function(e){
+        var t = e.touches[0];
+        swipe_det.sX = t.screenX;
+        swipe_det.sY = t.screenY;
+      },false);
+      ele.addEventListener('touchmove',function(e){
+        e.preventDefault();
+        var t = e.touches[0];
+        swipe_det.eX = t.screenX;
+        swipe_det.eY = t.screenY;
+      },false);
+      ele.addEventListener('touchend',function(e){
+        //horizontal detection
+        if ((((swipe_det.eX - min_x > swipe_det.sX) || (swipe_det.eX + min_x < swipe_det.sX)) && ((swipe_det.eY < swipe_det.sY + max_y) && (swipe_det.sY > swipe_det.eY - max_y)))) {
+          if(swipe_det.eX > swipe_det.sX) direc = "r";
+          else direc = "l";
+        }
+        //vertical detection
+        if ((((swipe_det.eY - min_y > swipe_det.sY) || (swipe_det.eY + min_y < swipe_det.sY)) && ((swipe_det.eX < swipe_det.sX + max_x) && (swipe_det.sX > swipe_det.eX - max_x)))) {
+          if(swipe_det.eY > swipe_det.sY) direc = "d";
+          else direc = "u";
+        }
+
+        if (direc != "") {
+          if(typeof func == 'function') func(el,direc);
+        }
+        direc = "";
+      },false);
+    }
+
+    function myfunction(el,d) {
+			let direction = (d === 'u' ? 'ArrowUp' : (d === 'd' ? 'ArrowDown' : (d === 'l' ? 'ArrowLeft' : (d === 'r' ? 'ArrowRight'))))
+      moveSnake(direction)
+    }
+
+
+
+    detectswipe('body',myfunction);
